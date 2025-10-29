@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { MapPin, Navigation, Clock, Phone, Star } from "lucide-react"
+import { MapPin, Navigation, Clock, Phone, Star, Coins } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface CollectionPoint {
   id: number
@@ -18,6 +19,9 @@ interface CollectionPoint {
   phone: string
   hours: string
   materials: string[]
+  lat: number
+  lng: number
+  pointsPerMaterial: { [key: string]: number }
 }
 
 const collectionPoints: CollectionPoint[] = [
@@ -31,6 +35,9 @@ const collectionPoints: CollectionPoint[] = [
     phone: "(31) 3241-5000",
     hours: "Seg-Sex: 8h-18h, Sáb: 8h-12h",
     materials: ["Plástico", "Papel", "Metal", "Vidro"],
+    lat: -19.9386,
+    lng: -43.9352,
+    pointsPerMaterial: { Plástico: 10, Papel: 8, Metal: 15, Vidro: 12 },
   },
   {
     id: 2,
@@ -42,6 +49,9 @@ const collectionPoints: CollectionPoint[] = [
     phone: "(31) 3277-8900",
     hours: "Seg-Sex: 7h-19h, Sáb: 7h-13h",
     materials: ["Plástico", "Papel", "Eletrônicos"],
+    lat: -19.8517,
+    lng: -43.9668,
+    pointsPerMaterial: { Plástico: 10, Papel: 8, Eletrônicos: 25 },
   },
   {
     id: 3,
@@ -53,6 +63,9 @@ const collectionPoints: CollectionPoint[] = [
     phone: "(31) 3277-5500",
     hours: "Seg-Sex: 9h-17h",
     materials: ["Papel", "Metal", "Vidro"],
+    lat: -19.9227,
+    lng: -43.945,
+    pointsPerMaterial: { Papel: 8, Metal: 15, Vidro: 12 },
   },
   {
     id: 4,
@@ -64,6 +77,9 @@ const collectionPoints: CollectionPoint[] = [
     phone: "(31) 3384-2200",
     hours: "Seg-Sáb: 8h-18h",
     materials: ["Plástico", "Papel", "Metal"],
+    lat: -19.9833,
+    lng: -44.0333,
+    pointsPerMaterial: { Plástico: 10, Papel: 8, Metal: 15 },
   },
   {
     id: 5,
@@ -75,6 +91,9 @@ const collectionPoints: CollectionPoint[] = [
     phone: "(31) 3486-7700",
     hours: "Seg-Sex: 8h-17h",
     materials: ["Vidro", "Eletrônicos", "Metal"],
+    lat: -19.8167,
+    lng: -43.9667,
+    pointsPerMaterial: { Vidro: 12, Eletrônicos: 25, Metal: 15 },
   },
   {
     id: 6,
@@ -86,6 +105,9 @@ const collectionPoints: CollectionPoint[] = [
     phone: "(31) 3352-9000",
     hours: "Seg-Sex: 7h-19h, Sáb: 8h-14h",
     materials: ["Plástico", "Papel", "Vidro", "Metal"],
+    lat: -19.9319,
+    lng: -44.0542,
+    pointsPerMaterial: { Plástico: 10, Papel: 8, Vidro: 12, Metal: 15 },
   },
   {
     id: 7,
@@ -97,12 +119,21 @@ const collectionPoints: CollectionPoint[] = [
     phone: "(31) 3201-4400",
     hours: "Seg-Sex: 9h-18h",
     materials: ["Papel", "Metal", "Eletrônicos"],
+    lat: -19.9167,
+    lng: -43.9389,
+    pointsPerMaterial: { Papel: 8, Metal: 15, Eletrônicos: 25 },
   },
 ]
 
 export function CollectionPointsList() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState<string>("all")
+  const [selectedPoint, setSelectedPoint] = useState<CollectionPoint | null>(null)
+
+  const handleNavigate = (point: CollectionPoint) => {
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${point.lat},${point.lng}`
+    window.open(url, "_blank")
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -225,11 +256,20 @@ export function CollectionPointsList() {
 
               {/* Actions */}
               <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                <Button
+                  size="sm"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                  onClick={() => handleNavigate(point)}
+                >
                   <Navigation className="h-4 w-4 mr-2" />
                   Navegar
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 bg-transparent"
+                  onClick={() => setSelectedPoint(point)}
+                >
                   Ver Detalhes
                 </Button>
               </div>
@@ -237,6 +277,104 @@ export function CollectionPointsList() {
           </Card>
         ))}
       </div>
+
+      {/* Details Modal */}
+      <Dialog open={!!selectedPoint} onOpenChange={() => setSelectedPoint(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-white via-emerald-50/30 to-white dark:from-gray-900 dark:via-emerald-950/20 dark:to-gray-900">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
+              {selectedPoint?.name}
+            </DialogTitle>
+            <DialogDescription>Informações detalhadas do ponto de coleta</DialogDescription>
+          </DialogHeader>
+
+          {selectedPoint && (
+            <div className="space-y-6 pt-4">
+              {/* Status and Rating */}
+              <div className="flex items-center gap-4">
+                <Badge
+                  variant={selectedPoint.status === "open" ? "default" : "secondary"}
+                  className="text-sm px-3 py-1"
+                >
+                  <div className={`w-2 h-2 rounded-full ${getStatusColor(selectedPoint.status)} mr-2`} />
+                  {getStatusText(selectedPoint.status)}
+                </Badge>
+                <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                  <Star className="h-5 w-5 fill-current" />
+                  <span className="font-semibold text-lg">{selectedPoint.rating}</span>
+                </div>
+                <div className="ml-auto text-emerald-600 dark:text-emerald-400 font-semibold">
+                  {selectedPoint.distance}
+                </div>
+              </div>
+
+              {/* Address */}
+              <Card className="p-4 bg-white/50 dark:bg-gray-800/50">
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-5 w-5 mt-0.5 shrink-0 text-emerald-600" />
+                  <div>
+                    <h3 className="font-semibold mb-1">Endereço</h3>
+                    <p className="text-sm text-muted-foreground">{selectedPoint.address}</p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="p-4 bg-white/50 dark:bg-gray-800/50">
+                  <div className="flex items-start gap-3">
+                    <Phone className="h-5 w-5 mt-0.5 shrink-0 text-emerald-600" />
+                    <div>
+                      <h3 className="font-semibold mb-1">Telefone</h3>
+                      <p className="text-sm text-muted-foreground">{selectedPoint.phone}</p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-4 bg-white/50 dark:bg-gray-800/50">
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 mt-0.5 shrink-0 text-emerald-600" />
+                    <div>
+                      <h3 className="font-semibold mb-1">Horário</h3>
+                      <p className="text-sm text-muted-foreground">{selectedPoint.hours}</p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Materials and Points */}
+              <Card className="p-4 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-gray-800/50">
+                <div className="flex items-center gap-2 mb-4">
+                  <Coins className="h-5 w-5 text-emerald-600" />
+                  <h3 className="font-semibold">Materiais Aceitos e Pontos</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {selectedPoint.materials.map((material) => (
+                    <div
+                      key={material}
+                      className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800"
+                    >
+                      <span className="font-medium">{material}</span>
+                      <Badge className="bg-emerald-600 hover:bg-emerald-700">
+                        {selectedPoint.pointsPerMaterial[material]} pts/kg
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Action Button */}
+              <Button
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 text-lg"
+                onClick={() => handleNavigate(selectedPoint)}
+              >
+                <Navigation className="h-5 w-5 mr-2" />
+                Abrir no Google Maps
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

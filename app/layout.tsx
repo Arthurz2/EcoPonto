@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   title: "EcoPonto - Transforme Lixo em Recompensas",
   description: "Conecte-se a pontos de coleta de recicláveis e ganhe pontos para trocar por benefícios incríveis",
   generator: "UPX-1",
+   icons: {
+    icon: "/logoico.ico", // Caminho relativo à pasta 'public'
+    shortcut: "logoico.ico",
+    apple: "logopng.png",
+  },
 }
 
 export default function RootLayout({

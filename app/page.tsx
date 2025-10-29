@@ -250,7 +250,7 @@ export default function HomePage() {
                 EcoPonto
               </span>
             </div>
-            <p className="text-sm text-gray-600">2024 EcoPonto. Transformando reciclagem em recompensas.</p>
+            <p className="text-sm text-gray-600">2025 EcoPonto. Transformando reciclagem em recompensas.</p>
           </div>
         </div>
       </footer>

@@ -1,32 +1,48 @@
+"use client"
+
+import { useState } from "react"
 import { RewardsCategories } from "@/components/rewards-categories"
 import { UserPointsBalance } from "@/components/user-points-balance"
 import { RecentExchanges } from "@/components/recent-exchanges"
-import { Gift, ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { AppNavigation } from "@/components/app-navigation"
+
+export type Exchange = {
+  id: number
+  reward: string
+  points: number
+  date: string
+  status: string
+}
 
 export default function RewardsPage() {
+  const [userPoints, setUserPoints] = useState(1250)
+  const [weeklyPoints, setWeeklyPoints] = useState(150)
+  const [exchanges, setExchanges] = useState<Exchange[]>([
+    { id: 1, reward: "Café Grátis", points: 200, date: "Há 2 dias", status: "completed" },
+    { id: 2, reward: "Vale Compras R$ 20", points: 500, date: "Há 5 dias", status: "completed" },
+    { id: 3, reward: "Kit Sustentável", points: 600, date: "Há 1 semana", status: "completed" },
+  ])
+
+  const handleRedeem = (rewardName: string, points: number) => {
+    // Deduct points
+    setUserPoints((prev) => prev - points)
+
+    // Add to exchanges history
+    const newExchange: Exchange = {
+      id: Date.now(),
+      reward: rewardName,
+      points: points,
+      date: "Agora",
+      status: "completed",
+    }
+    setExchanges((prev) => [newExchange, ...prev])
+  }
+
+  const totalRedeemed = exchanges.reduce((sum, ex) => sum + ex.points, 0)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
-      {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Voltar
-                </Button>
-              </Link>
-              <div className="flex items-center gap-2">
-                <Gift className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-semibold">Recompensas</h1>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <AppNavigation />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
@@ -34,13 +50,13 @@ export default function RewardsPage() {
           <div className="grid lg:grid-cols-4 gap-6">
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-6">
-              <UserPointsBalance />
-              <RewardsCategories />
+              <UserPointsBalance points={userPoints} weeklyPoints={weeklyPoints} />
+              <RewardsCategories onRedeem={handleRedeem} userPoints={userPoints} />
             </div>
 
             {/* Sidebar */}
             <div className="space-y-6">
-              <RecentExchanges />
+              <RecentExchanges exchanges={exchanges} totalRedeemed={totalRedeemed} />
             </div>
           </div>
         </div>

@@ -8,7 +8,6 @@ import {
   BarChart3,
   Activity,
   Leaf,
-  ArrowLeft,
   Download,
   Calendar,
   Wind,
@@ -18,9 +17,9 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Area, AreaChart } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { AppNavigation } from "@/components/app-navigation"
 
 // Mock data for admin dashboard
 const engagementData = [
@@ -62,34 +61,29 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
       {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+      <AppNavigation />
+
+      {/* Admin Actions Bar */}
+      <div className="border-b bg-white/80 backdrop-blur-md shadow-sm">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="hover:bg-gray-100">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Voltar
-                </Button>
-              </Link>
-              <div className="flex items-center gap-2 text-slate-700">
-                <BarChart3 className="h-8 w-8" />
-                <span className="text-2xl font-bold">Painel Administrativo</span>
-              </div>
+            <div className="flex items-center gap-2 text-slate-700">
+              <BarChart3 className="h-6 w-6" />
+              <span className="text-lg font-bold">Painel Administrativo</span>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="hover:bg-emerald-50 bg-transparent">
+              <Button variant="outline" size="sm" className="hover:bg-emerald-50 bg-transparent hidden sm:flex">
                 <Download className="h-4 w-4 mr-2" />
                 Exportar Relatório
               </Button>
-              <Button variant="outline" size="sm" className="hover:bg-emerald-50 bg-transparent">
+              <Button variant="outline" size="sm" className="hover:bg-emerald-50 bg-transparent hidden sm:flex">
                 <Calendar className="h-4 w-4 mr-2" />
-                Período: Últimos 30 dias
+                Últimos 30 dias
               </Button>
             </div>
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* Admin Dashboard Content */}
       <div className="container mx-auto px-4 py-8">

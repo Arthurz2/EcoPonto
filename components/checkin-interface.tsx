@@ -10,16 +10,28 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { QrCode, Scan, CheckCircle2, Loader2, Recycle, Trash2, Droplet, Battery, X } from "lucide-react"
 import { toast } from "sonner"
+import type { Activity } from "@/app/checkin/page"
 
 const materialTypes = [
-  { value: "plastic", label: "Plástico", icon: Recycle, color: "text-blue-500", points: 10 },
-  { value: "paper", label: "Papel", icon: Recycle, color: "text-amber-500", points: 8 },
-  { value: "glass", label: "Vidro", icon: Droplet, color: "text-emerald-500", points: 12 },
-  { value: "metal", label: "Metal", icon: Battery, color: "text-slate-500", points: 15 },
-  { value: "organic", label: "Orgânico", icon: Trash2, color: "text-green-600", points: 5 },
+  { value: "plastic", label: "Plástico", icon: Recycle, color: "text-blue-500", bgColor: "bg-blue-500/10", points: 10 },
+  { value: "paper", label: "Papel", icon: Recycle, color: "text-amber-500", bgColor: "bg-amber-500/10", points: 8 },
+  {
+    value: "glass",
+    label: "Vidro",
+    icon: Droplet,
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    points: 12,
+  },
+  { value: "metal", label: "Metal", icon: Battery, color: "text-slate-500", bgColor: "bg-slate-500/10", points: 15 },
+  { value: "organic", label: "Orgânico", icon: Trash2, color: "text-green-600", bgColor: "bg-green-600/10", points: 5 },
 ]
 
-export function CheckInInterface() {
+type CheckInInterfaceProps = {
+  onCheckIn: (activity: Activity) => void
+}
+
+export function CheckInInterface({ onCheckIn }: CheckInInterfaceProps) {
   const [isScanning, setIsScanning] = useState(false)
   const [scanned, setScanned] = useState(false)
   const [selectedMaterial, setSelectedMaterial] = useState("")
@@ -77,6 +89,21 @@ export function CheckInInterface() {
     setTimeout(() => {
       const material = materialTypes.find((m) => m.value === selectedMaterial)
       const pointsEarned = material ? material.points * Number.parseFloat(weight) : 0
+
+      const newActivity: Activity = {
+        id: Date.now(),
+        type: selectedMaterial,
+        material: material?.label || "",
+        weight: Number.parseFloat(weight),
+        points: Math.round(pointsEarned),
+        location: locationName,
+        date: "Agora",
+        icon: material?.icon || Recycle,
+        color: material?.color || "text-gray-500",
+        bgColor: material?.bgColor || "bg-gray-500/10",
+      }
+
+      onCheckIn(newActivity)
 
       setIsSubmitting(false)
       toast.success(`Check-in realizado! Você ganhou ${pointsEarned.toFixed(0)} pontos!`, {

@@ -1,20 +1,6 @@
 "use client"
 
-import {
-  Recycle,
-  Award,
-  Leaf,
-  TrendingUp,
-  MapPin,
-  Gift,
-  User,
-  LogOut,
-  Calendar,
-  Droplet,
-  Zap,
-  TreePine,
-  Wind,
-} from "lucide-react"
+import { Recycle, Award, Leaf, TrendingUp, MapPin, Gift, Calendar, Droplet, Zap, TreePine, Wind } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
@@ -32,6 +18,7 @@ import {
   Cell,
 } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { AppNavigation } from "@/components/app-navigation"
 
 // Mock data for charts
 const pointsOverTimeData = [
@@ -64,48 +51,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
       {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-emerald-600">
-              <Recycle className="h-8 w-8" />
-              <span className="text-2xl font-bold">EcoPonto</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link href="/checkin">
-                <Button variant="ghost" size="sm" className="hover:bg-emerald-50">
-                  <Recycle className="h-4 w-4 mr-2" />
-                  Check-in
-                </Button>
-              </Link>
-              <Link href="/map">
-                <Button variant="ghost" size="sm" className="hover:bg-emerald-50">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Mapa
-                </Button>
-              </Link>
-              <Link href="/rewards">
-                <Button variant="ghost" size="sm" className="hover:bg-emerald-50">
-                  <Gift className="h-4 w-4 mr-2" />
-                  Recompensas
-                </Button>
-              </Link>
-              <Link href="/profile">
-                <Button variant="ghost" size="sm" className="hover:bg-emerald-50">
-                  <User className="h-4 w-4 mr-2" />
-                  Perfil
-                </Button>
-              </Link>
-              <Link href="/">
-                <Button variant="ghost" size="sm" className="hover:bg-red-50 hover:text-red-600">
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sair
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <AppNavigation />
 
       {/* Dashboard Content */}
       <div className="container mx-auto px-4 py-8">
@@ -123,7 +69,7 @@ export default function DashboardPage() {
                 <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center">
                   <Calendar className="h-8 w-8 mx-auto mb-2" />
                   <p className="text-sm font-medium">Membro desde</p>
-                  <p className="text-2xl font-bold">Jan 2024</p>
+                  <p className="text-2xl font-bold">Jan 2025</p>
                 </div>
               </div>
             </div>
