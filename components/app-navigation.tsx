@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Recycle, MapPin, Gift, User, LogOut, Menu, LayoutDashboard, QrCode } from "lucide-react"
+import { Recycle, MapPin, Gift, User, LogOut, Menu, LayoutDashboard, QrCode, BookOpen, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
@@ -28,6 +28,11 @@ const navigationItems = [
     name: "Recompensas",
     href: "/rewards",
     icon: Gift,
+  },
+  {
+    name: "Comunidade",
+    href: "/community",
+    icon: Users,
   },
   {
     name: "Perfil",
